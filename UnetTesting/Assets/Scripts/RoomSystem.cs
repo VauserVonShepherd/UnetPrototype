@@ -93,27 +93,9 @@ public class RoomSystem : MonoBehaviour {
     
     public void AddPlayer(Player player)
     {
-        //If the player has not connected before
-        if (!GlobalNetworkManager.instance.AllPlayerData.ContainsKey(player.playerIPAddress))
-        {
-            player.Initialise();
-
-            PlayerData newplayerdata = new PlayerData(player.playerData);
-
-            //add it to the history of connected player to save persistence
-            GlobalNetworkManager.instance.AllPlayerData.Add(newplayerdata.m_ipaddress, newplayerdata);
-        }
-        else
-        {
-            //Otherwise load the player with their saved data
-            player.playerData = new PlayerData(GlobalNetworkManager.instance.AllPlayerData[player.playerIPAddress]);
-        }
-        
         //add the player && refresh
         GlobalNetworkManager.instance.AllPlayers.Add(player);
-
-        GlobalNetworkManager.instance.UpdatePlayerData(player.playerData);
-
+        
         RefreshScoreboard();
     }
 }

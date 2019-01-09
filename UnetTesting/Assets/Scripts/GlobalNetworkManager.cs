@@ -10,18 +10,38 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
     //Current players in the room
     public List<Player> AllPlayers = new List<Player>();
     //Store a dictionary of all players that joined, prevent loss of data (Persistence), use ipaddress (string) to find the player data again.
+
     public Dictionary<string, PlayerData> AllPlayerData = new Dictionary<string, PlayerData>();
-    public void UpdatePlayerData(PlayerData newplayerdata)
+    public void GetPlayerData(PlayerData newplayerdata)
     {
         if (AllPlayerData.ContainsKey(newplayerdata.m_ipaddress))
         {
-            AllPlayerData[newplayerdata.m_ipaddress] = new PlayerData(newplayerdata);
+            //AllPlayerData[newplayerdata.m_ipaddress] = new PlayerData(newplayerdata);
+            newplayerdata = AllPlayerData[newplayerdata.m_ipaddress];
             if (RoomSystem.instance)
             {
                 RoomSystem.instance.RefreshScoreboard();
             }
         }
     }
+
+    public void SetPlayerData(PlayerData newplayerdata)
+    {
+        StartCoroutine(SetPlayerDataCoroutine(newplayerdata));
+    }
+    private IEnumerator SetPlayerDataCoroutine(PlayerData newplayerdata)
+    {
+        yield return new WaitForSeconds(1);
+        if (AllPlayerData.ContainsKey(newplayerdata.m_ipaddress))
+        {
+            AllPlayerData[newplayerdata.m_ipaddress] = newplayerdata;
+            if (RoomSystem.instance)
+            {
+                RoomSystem.instance.RefreshScoreboard();
+            }
+        }
+    }
+
 
     public string clientExternalIP {
         get
@@ -33,6 +53,14 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
     private void Start()
     {
         instance = this;
+    }
+
+    private void Update()
+    {
+        if(AllPlayerData.Count > 0)
+        {
+            //Debug.Log(AllPlayerData["192.168.1.134"].m_color + " : " + AllPlayerData["192.168.1.134"].m_name);
+        }
     }
 
     /// <summary>
