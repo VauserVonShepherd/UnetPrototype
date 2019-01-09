@@ -18,7 +18,7 @@ public class PlayerStat : MonoBehaviour {
         nameTxt.text = m_Player.playerName;
 
         colorSprite.color = m_Player.playerColor;
-
+        
         for (int i = 0; i < m_Player.allLevel.Count; i++)
         {
             allStageStat[i].UpdateText(m_Player.allLevel["Stage"+ (i+1)]);

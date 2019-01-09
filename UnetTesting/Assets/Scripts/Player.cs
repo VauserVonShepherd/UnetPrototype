@@ -12,7 +12,7 @@ public class Player : NetworkBehaviour
     public GameStateScriptableObject gameState;
 
     public PlayerData playerData = new PlayerData();
-
+    
     //Player Info
     public string playerIPAddress
     {
@@ -23,11 +23,6 @@ public class Player : NetworkBehaviour
         set
         {
             playerData.m_ipaddress = value;
-
-            if (RoomSystem.instance)
-            {
-                RoomSystem.instance.RefreshUser();
-            }
         }
     }
     
@@ -40,11 +35,6 @@ public class Player : NetworkBehaviour
         set
         {
             playerData.m_name = value;
-
-            if (RoomSystem.instance)
-            {
-                RoomSystem.instance.RefreshUser();
-            }
         }
     }
     
@@ -57,11 +47,6 @@ public class Player : NetworkBehaviour
         set
         {
             playerData.m_color = value;
-
-            if (RoomSystem.instance)
-            {
-                RoomSystem.instance.RefreshUser();
-            }
         }
     }
 
@@ -74,17 +59,14 @@ public class Player : NetworkBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        if (isLocalPlayer)
-        {   
-            CmdChangeColor(new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)));
-            CmdChangeIPAddress(IPManager.GetLocalIPAddress());
-        }
+        if(isLocalPlayer)
+        CmdChangeIPAddress(IPManager.GetLocalIPAddress());
 
-        if (isServer)
-        {
+        if (isServer) {
             RoomSystem.instance.AddPlayer(this);
             return;
-        } 
+        }
+        
         SceneManager.LoadScene("Game");
     }
 
@@ -99,22 +81,45 @@ public class Player : NetworkBehaviour
         }
     }
 
+    public void Initialise()
+    {
+        CmdChangeColor(new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)));
+    }
+
     [Command]
     void CmdChangeName(string newName)
     {
         playerName = newName;
+        GlobalNetworkManager.instance.UpdatePlayerData(playerData);
+        
+        if (RoomSystem.instance)
+        {
+            RoomSystem.instance.RefreshScoreboard();
+        }
     }
 
     [Command]
     void CmdChangeIPAddress(string ipaddress)
     {
         playerData.m_ipaddress = ipaddress;
+        GlobalNetworkManager.instance.UpdatePlayerData(playerData);
+
+        if (RoomSystem.instance)
+        {
+            RoomSystem.instance.RefreshScoreboard();
+        }
     }
 
     [Command]
     void CmdChangeColor(Color newColor)
     {
         playerData.m_color = newColor;
+        GlobalNetworkManager.instance.UpdatePlayerData(playerData);
+
+        if (RoomSystem.instance)
+        {
+            RoomSystem.instance.RefreshScoreboard();
+        }
     }
 }
 
@@ -131,11 +136,13 @@ public class PlayerData
     {
         m_name = "";
         m_ipaddress = IPManager.GetLocalIPAddress();
+        m_color = new Color(0, 0, 0);
     }
 
     public PlayerData(PlayerData playerdata)
     {
         m_name = playerdata.m_name;
         m_ipaddress = playerdata.m_ipaddress;
+        m_color = playerdata.m_color;
     }
 }

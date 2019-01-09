@@ -6,8 +6,23 @@ using UnityEngine.SceneManagement;
 
 public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
     public static GlobalNetworkManager instance;
-    NetworkClient myClient;
-    
+
+    //Current players in the room
+    public List<Player> AllPlayers = new List<Player>();
+    //Store a dictionary of all players that joined, prevent loss of data (Persistence), use ipaddress (string) to find the player data again.
+    public Dictionary<string, PlayerData> AllPlayerData = new Dictionary<string, PlayerData>();
+    public void UpdatePlayerData(PlayerData newplayerdata)
+    {
+        if (AllPlayerData.ContainsKey(newplayerdata.m_ipaddress))
+        {
+            AllPlayerData[newplayerdata.m_ipaddress] = new PlayerData(newplayerdata);
+            if (RoomSystem.instance)
+            {
+                RoomSystem.instance.RefreshScoreboard();
+            }
+        }
+    }
+
     public string clientExternalIP {
         get
         {
@@ -72,7 +87,7 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
 
         if (RoomSystem.instance)
         {
-            RoomSystem.instance.RefreshUser();
+            RoomSystem.instance.RefreshScoreboard();
         }
     }
 
@@ -90,7 +105,7 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
         if (MainMenuManager.instance)
         {
             MainMenuManager.instance.SetMenu(0);
-            RoomSystem.instance.RefreshUser();
+            RoomSystem.instance.RefreshScoreboard();
         }
     }
 }
