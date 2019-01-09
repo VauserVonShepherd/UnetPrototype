@@ -97,6 +97,8 @@ public class RoomSystem : MonoBehaviour {
 
     public void AddPlayer(Player player)
     {
+        Debug.Log(player.playerIPAddress);
+
         //If the player has not connected before
         if (!AllPlayerData.ContainsKey(player.playerIPAddress))
         {

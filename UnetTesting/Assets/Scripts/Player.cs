@@ -74,7 +74,11 @@ public class Player : NetworkBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        CmdChangeColor(new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)));
+        if (isLocalPlayer)
+        {   
+            CmdChangeColor(new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)));
+            CmdChangeIPAddress(IPManager.GetLocalIPAddress());
+        }
 
         if (isServer)
         {
@@ -120,7 +124,6 @@ public class PlayerData
     public string m_name;
     [SyncVar]
     public string m_ipaddress;
-
     [SyncVar]
     public Color m_color;
 
