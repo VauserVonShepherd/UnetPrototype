@@ -14,20 +14,32 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
     public Dictionary<string, PlayerData> AllPlayerData = new Dictionary<string, PlayerData>();
     public void GetPlayerData(PlayerData newplayerdata)
     {
+        Debug.Log(newplayerdata.m_ipaddress);
         if (AllPlayerData.ContainsKey(newplayerdata.m_ipaddress))
         {
-            //AllPlayerData[newplayerdata.m_ipaddress] = new PlayerData(newplayerdata);
-            newplayerdata = AllPlayerData[newplayerdata.m_ipaddress];
+            //Only if its the server, then refresh the scoreboard
             if (RoomSystem.instance)
             {
+                //AllPlayerData[newplayerdata.m_ipaddress] = new PlayerData(newplayerdata);
+                newplayerdata = AllPlayerData[newplayerdata.m_ipaddress];
                 RoomSystem.instance.RefreshScoreboard();
             }
+        }
+        else
+        {
+            //if doesnt exist, set a new one
+            SetPlayerData(newplayerdata);
         }
     }
 
     public void SetPlayerData(PlayerData newplayerdata)
     {
         StartCoroutine(SetPlayerDataCoroutine(newplayerdata));
+
+        if (newplayerdata.isServer)
+        {
+            RoomSystem.instance.RefreshScoreboard();
+        }
     }
     private IEnumerator SetPlayerDataCoroutine(PlayerData newplayerdata)
     {

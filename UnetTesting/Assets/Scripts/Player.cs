@@ -69,38 +69,24 @@ public class Player : NetworkBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-
-        //If the player has not connected before
-        if (!GlobalNetworkManager.instance.AllPlayerData.ContainsKey(playerIPAddress))
-        {
-            Initialise();
-
-            PlayerData newplayerdata = new PlayerData(playerData);
-
-            //add it to the history of connected player to save persistence
-            GlobalNetworkManager.instance.AllPlayerData.Add(newplayerdata.m_ipaddress, newplayerdata);
-        }
-        else
-        {
-            //Otherwise load the player with their saved data
-            playerData = new PlayerData(GlobalNetworkManager.instance.AllPlayerData[playerIPAddress]);
-        }
-
+        //Setup the player and check whether or not it's new or been in the room before
+        //CmdInitialize();
 
         GlobalNetworkManager.instance.GetPlayerData(playerData);
         
+        //If object is local, tell the server to give it its value
         if (isLocalPlayer)
         {
-            CmdChangeIPAddress(IPManager.GetLocalIPAddress());
+            CmdSetupNetworkPresence(IPManager.GetLocalIPAddress());
         }
 
-        Debug.Log("After : " + playerColor);
-
+        //If you are server, then run
         if (isServer) {
             RoomSystem.instance.AddPlayer(this);
             return;
         }
         
+        //If you are not the server, then load a new scene
         SceneManager.LoadScene("Game");
     }
 
@@ -115,9 +101,33 @@ public class Player : NetworkBehaviour
         }
     }
 
-    public void Initialise()
+    //Use command cuz only the server will check
+    [Command]
+    public void CmdInitialize()
     {
-        CmdChangeColor(new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)));
+        //If the player has not connected before
+        if (!GlobalNetworkManager.instance.AllPlayerData.ContainsKey(playerIPAddress))
+        {
+            Debug.Log(m_ipaddress + " RECONNECTED");
+            CmdChangeColor(new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)));
+
+            //Change color because new
+            //playerColor = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
+
+            //Create a new temp to copy the data
+            PlayerData newplayerdata = new PlayerData(playerData);
+            
+            //add temp to the history of connected player to save persistence
+            GlobalNetworkManager.instance.AllPlayerData.Add(newplayerdata.m_ipaddress, newplayerdata);
+
+        }
+        else
+        {
+            Debug.Log(m_ipaddress + " Just Joined");
+            //Connected before
+            //Otherwise load the player with their saved data
+            playerData = new PlayerData(GlobalNetworkManager.instance.AllPlayerData[playerIPAddress]);
+        }
     }
 
     [Command]
@@ -128,17 +138,21 @@ public class Player : NetworkBehaviour
     }
 
     [Command]
-    void CmdChangeIPAddress(string ipaddress)
+    void CmdSetupNetworkPresence(string ipaddress)
     {
+        Debug.Log("SETUP NETWORK PRESENCE");
         playerIPAddress = ipaddress;
-        GlobalNetworkManager.instance.SetPlayerData(playerData);
+        //GlobalNetworkManager.instance.GetPlayerData(playerData);
+
+        CmdInitialize();
     }
 
     [Command]
     void CmdChangeColor(Color newColor)
     {
         playerColor = newColor;
-        GlobalNetworkManager.instance.SetPlayerData(playerData);
+        Debug.Log(playerColor);
+        //GlobalNetworkManager.instance.SetPlayerData(playerData);
     }
 }
 
@@ -151,11 +165,16 @@ public class PlayerData
     [SyncVar]
     public Color m_color;
 
+    [SyncVar]
+    public bool isServer = false;
+
     public PlayerData()
     {
         m_name = "";
         m_ipaddress = IPManager.GetLocalIPAddress();
         m_color = new Color(0, 0, 0);
+
+        isServer = false;
     }
 
     public PlayerData(PlayerData playerdata)
@@ -163,5 +182,7 @@ public class PlayerData
         m_name = playerdata.m_name;
         m_ipaddress = playerdata.m_ipaddress;
         m_color = playerdata.m_color;
+
+        isServer = playerdata.isServer;
     }
 }
