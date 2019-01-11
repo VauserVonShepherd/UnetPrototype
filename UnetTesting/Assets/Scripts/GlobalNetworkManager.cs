@@ -14,6 +14,8 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
     public Dictionary<string, PlayerData> AllPlayerData = new Dictionary<string, PlayerData>();
     public void GetPlayerData(PlayerData newplayerdata)
     {
+        Debug.Log("does the player have persistence yet? " + newplayerdata.m_ipaddress);
+
         if (AllPlayerData.ContainsKey(newplayerdata.m_ipaddress))
         {
             //Only if its the server, then refresh the scoreboard

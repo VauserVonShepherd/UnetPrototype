@@ -71,8 +71,6 @@ public class Player : NetworkBehaviour
 
         //Setup the player and check whether or not it's new or been in the room before
         //CmdInitialize();
-
-        GlobalNetworkManager.instance.GetPlayerData(playerData);
         
         //If object is local, tell the server to give it its value
         if (isLocalPlayer)
@@ -108,7 +106,7 @@ public class Player : NetworkBehaviour
         //If the player has not connected before
         if (!GlobalNetworkManager.instance.AllPlayerData.ContainsKey(playerIPAddress))
         {
-            Debug.Log(m_ipaddress + " RECONNECTED");
+            Debug.Log(m_ipaddress + " RECONNECTED " + playerName);
             CmdChangeColor(new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)));
             CmdChangeName(playerName);
             //Change color because new
@@ -133,8 +131,8 @@ public class Player : NetworkBehaviour
     [Command]
     void CmdChangeName(string newName)
     {
-        Debug.Log("CHANGE NAME");
         playerName = newName;
+        Debug.Log(playerIPAddress + " CHANGE NAME TO " + playerName);
         GlobalNetworkManager.instance.SetPlayerData(playerData);
     }
 
@@ -144,6 +142,7 @@ public class Player : NetworkBehaviour
         playerIPAddress = ipaddress;
 
         CmdInitialize();
+        GlobalNetworkManager.instance.GetPlayerData(playerData);
     }
 
     [Command]
