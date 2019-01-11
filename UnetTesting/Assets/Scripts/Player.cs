@@ -110,7 +110,7 @@ public class Player : NetworkBehaviour
         {
             Debug.Log(m_ipaddress + " RECONNECTED");
             CmdChangeColor(new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)));
-
+            CmdChangeName(playerName);
             //Change color because new
             //playerColor = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
 
