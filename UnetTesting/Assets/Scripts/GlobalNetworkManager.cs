@@ -50,7 +50,6 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
         {
             AllPlayerData[newplayerdata.m_ipaddress] = newplayerdata;
         }
-        Debug.Log(AllPlayerData.ContainsKey(newplayerdata.m_ipaddress));
         RoomSystem.instance.RefreshScoreboard();
     }
 

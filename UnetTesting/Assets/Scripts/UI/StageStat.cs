@@ -11,8 +11,6 @@ public class StageStat : MonoBehaviour {
     /// </summary>
     public void UpdateText(Level level)
     {
-        Debug.Log(level.status);
-
         statusTxt.text = level.status;
         timeTxt.text = level.time.ToString("f1");
         triesTxt.text = level.tries.ToString("f0");

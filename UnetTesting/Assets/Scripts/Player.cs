@@ -85,6 +85,7 @@ public class Player : NetworkBehaviour
 
     private void Update()
     {
+        //if the object is local to the player.
         if (isLocalPlayer)
         {
             if (Input.GetKeyDown(KeyCode.T))
@@ -102,21 +103,29 @@ public class Player : NetworkBehaviour
             {
                 CmdUpdateLevel(1);
             }
-            //ADD TIME
-            if (Input.GetKeyDown(KeyCode.I))
-            {
 
-            }
-            //ADD TRIES
-            if (Input.GetKeyDown(KeyCode.O))
+            //If the current level exist in the level collection
+            if(playerData.CurrentLevel <= playerData.allLevel.Count)
             {
-
-            }
-            //ADD FIRST TRY SCORE
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-
-            }
+                //ADD TIME
+                if (Input.GetKeyDown(KeyCode.I))
+                {
+                    CmdUpdateTime(1);
+                    CmdUpdatePlayerData();
+                }
+                //ADD TRIES
+                if (Input.GetKeyDown(KeyCode.O))
+                {
+                    CmdUpdateTries(1);
+                    CmdUpdatePlayerData();
+                }
+                //ADD FIRST TRY SCORE
+                if (Input.GetKeyDown(KeyCode.P))
+                {
+                    CmdUpdateFirstScore(1);
+                    CmdUpdatePlayerData();
+                }
+            }   //End check
         }
     }
 
@@ -182,8 +191,30 @@ public class Player : NetworkBehaviour
     [Command]
     void CmdUpdateLevel(int levelchange)
     {
-        playerData.CurrentLevel = Mathf.Clamp(playerData.CurrentLevel + levelchange,1,3);
+        playerData.CurrentLevel = Mathf.Clamp(playerData.CurrentLevel + levelchange, 1, playerData.allLevel.Count + 1);
         GlobalNetworkManager.instance.SetPlayerData(playerData);
+    }
+
+    [Command]
+    void CmdUpdatePlayerData()
+    {
+        GlobalNetworkManager.instance.SetPlayerData(playerData);
+    }
+
+    [Command]
+    void CmdUpdateFirstScore(int change)
+    {
+        playerData.CurrentLevelFirstTryScore += change;
+    }
+    [Command]
+    void CmdUpdateTries(int change)
+    {
+        playerData.CurrentLevelTries += change;
+    }
+    [Command]
+    void CmdUpdateTime(int change)
+    {
+        playerData.CurrentLevelTime += change;
     }
 }
 
@@ -206,14 +237,60 @@ public class PlayerData
     {
         set
         {
-            if(CurrentLevelTries > 0)
+            //if the next level exist in all the level list
+            if (value <= allLevel.Count)
             {
-                CurrentLevelStatus = "Completed";
-                return;
+                //Check if the current level is after the level (completed)
+                if(currentlevel > allLevel.Count)
+                {
+                    //Update the level to next position
+                    currentlevel = value;
+                }
+
+                //Make the current level to incomplete
+                CurrentLevelStatus = "Incomplete";
+                
+                //If the tries is more than 0, means completed
+                if (CurrentLevelTries > 0)
+                {
+                    //The level will be completed
+                    CurrentLevelStatus = "Completed";
+                    //Update the level to next position
+                    currentlevel = value;
+                    //Make the next position to ongoing
+                    CurrentLevelStatus = "Ongoing";
+                    return; //Stop here
+                }
+
+                //If there is no tries, incomplete
+                currentlevel = value;   //Update the level to next position
+                CurrentLevelStatus = "Ongoing"; //Put it to ongoing
             }
-            CurrentLevelStatus = "Incomplete";
-            currentlevel = value;
-            CurrentLevelStatus = "Ongoing";
+            else //if the next level is outside the all level list (finished)
+            {
+                //Check if the current level is after the level (completed)
+                if (currentlevel > allLevel.Count)
+                {
+                    return;
+                }
+                
+                //If the tries is more than 0
+                if (CurrentLevelTries > 0)
+                {
+                    //The level will be completed
+                    CurrentLevelStatus = "Completed";
+                    //Update the level to next position
+                    currentlevel = value;
+                    return;
+                }
+                else //no tries and is incomplete
+                {
+                    //Make the current level to incomplete
+                    CurrentLevelStatus = "Incomplete";
+                    //Update the level to next position
+                    currentlevel = value;
+                }
+            }
         }
         get
         {

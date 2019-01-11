@@ -24,6 +24,5 @@ public class GameStateScriptableObject : ScriptableObject
             //Give the player the level 
             player.playerData.allLevel.Add("Stage" + (i + 1), AllLevel[i]);
         }
-        Debug.Log(player.playerData.allLevel.Count);
     }
 }

@@ -36,4 +36,13 @@ public class Level {
         tries = 0;
         firstTryScore = 0;
     }
+
+    public Level (Level level)
+    {
+        stageVal = level.stageVal;
+        status = level.status;
+        time = level.time;
+        tries = level.tries;
+        firstTryScore = level.firstTryScore;
+    }
 }
