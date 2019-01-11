@@ -38,28 +38,7 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
         }
         return false;
     }
-
-    //public void GetPlayerData(PlayerData newplayerdata)
-    //{
-    //    Debug.Log("does the player have persistence yet? " + newplayerdata.m_ipaddress);
-
-    //    if (AllPlayerData.ContainsKey(newplayerdata.m_ipaddress))
-    //    {
-    //        //Only if its the server, then refresh the scoreboard
-    //        if (RoomSystem.instance)
-    //        {
-    //            //AllPlayerData[newplayerdata.m_ipaddress] = new PlayerData(newplayerdata);
-    //            newplayerdata = AllPlayerData[newplayerdata.m_ipaddress];
-    //            RoomSystem.instance.RefreshScoreboard();
-    //        }
-    //    }
-    //    else
-    //    {
-    //        //if doesnt exist, set a new one
-    //        SetPlayerData(newplayerdata);
-    //    }
-    //}
-
+    
     public void SetPlayerData(PlayerData newplayerdata)
     {
         StartCoroutine(SetPlayerDataCoroutine(newplayerdata));
@@ -104,11 +83,17 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
         StartClient();
     }
 
+    /// <summary>
+    /// What to do when hosting a room
+    /// </summary>
     public void HostRoom()
     {
         StartHost();
     }
 
+    /// <summary>
+    /// What happens when disconnect room
+    /// </summary>
     public void DisconnectRoom()
     {
         StopClient();
@@ -170,3 +155,24 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
         ResetHostData();
     }
 }
+
+//public void GetPlayerData(PlayerData newplayerdata)
+//{
+//    Debug.Log("does the player have persistence yet? " + newplayerdata.m_ipaddress);
+
+//    if (AllPlayerData.ContainsKey(newplayerdata.m_ipaddress))
+//    {
+//        //Only if its the server, then refresh the scoreboard
+//        if (RoomSystem.instance)
+//        {
+//            //AllPlayerData[newplayerdata.m_ipaddress] = new PlayerData(newplayerdata);
+//            newplayerdata = AllPlayerData[newplayerdata.m_ipaddress];
+//            RoomSystem.instance.RefreshScoreboard();
+//        }
+//    }
+//    else
+//    {
+//        //if doesnt exist, set a new one
+//        SetPlayerData(newplayerdata);
+//    }
+//}

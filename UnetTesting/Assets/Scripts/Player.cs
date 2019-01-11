@@ -194,6 +194,9 @@ public class PlayerData
 
     public Dictionary<string, Level> allLevel = new Dictionary<string, Level>();
 
+    [SyncVar]
+    public int CurrentLevel = 0;
+
     public PlayerData()
     {
         m_name = "Default_Name";
