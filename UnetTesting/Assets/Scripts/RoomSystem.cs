@@ -45,7 +45,7 @@ public class RoomSystem : MonoBehaviour {
     /// <summary>
     /// Refresh the scoreboard
     /// </summary>
-    private IEnumerator RefreshUserCoroutine()
+    private IEnumerator RefreshScoreboardCoroutine()
     {
         yield return new WaitForSeconds(1);
 
@@ -71,13 +71,13 @@ public class RoomSystem : MonoBehaviour {
         GlobalNetworkManager.instance.AllPlayers = FreshPlayerList;
 
         //For each player in room, add a new stat for them
-        for (int i = 0; i < GlobalNetworkManager.instance.AllPlayers.Count; i++)
+        for (int i = 0; i < GlobalNetworkManager.instance.allPlayerIPAddress.Count; i++)
         {
             //Spawn a new stat
             GameObject newPlayerStat = Instantiate(defaultPlayerStat.gameObject, StatScoreboard);
 
             playerStatList.Add(newPlayerStat.GetComponent<PlayerStat>());
-            newPlayerStat.GetComponent<PlayerStat>().m_Player = GlobalNetworkManager.instance.AllPlayers[i];
+            newPlayerStat.GetComponent<PlayerStat>().m_PlayerData = GlobalNetworkManager.instance.AllPlayerData[GlobalNetworkManager.instance.allPlayerIPAddress[i]];
 
             newPlayerStat.GetComponent<PlayerStat>().UpdateStat();
         }
@@ -88,7 +88,7 @@ public class RoomSystem : MonoBehaviour {
     /// </summary>
     public void RefreshScoreboard()
     {
-        StartCoroutine(RefreshUserCoroutine());
+        StartCoroutine(RefreshScoreboardCoroutine());
     }
     
     public void AddPlayer(Player player)

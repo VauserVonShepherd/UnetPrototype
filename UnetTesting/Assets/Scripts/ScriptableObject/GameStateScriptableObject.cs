@@ -22,7 +22,7 @@ public class GameStateScriptableObject : ScriptableObject
             AllLevel.Add(new Level(i + 1));
 
             //Give the player the level 
-            player.allLevel.Add("Stage" + (i + 1), AllLevel[i]);
+            player.playerData.allLevel.Add("Stage" + (i + 1), AllLevel[i]);
         }
     }
 }

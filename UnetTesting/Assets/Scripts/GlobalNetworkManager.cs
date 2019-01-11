@@ -11,27 +11,54 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
     public List<Player> AllPlayers = new List<Player>();
     //Store a dictionary of all players that joined, prevent loss of data (Persistence), use ipaddress (string) to find the player data again.
 
+    /// <summary>
+    /// Contains All PlayerData, the key is the ip address of the player data, used by the server to find the data of player
+    /// </summary>
     public Dictionary<string, PlayerData> AllPlayerData = new Dictionary<string, PlayerData>();
-    public void GetPlayerData(PlayerData newplayerdata)
-    {
-        Debug.Log("does the player have persistence yet? " + newplayerdata.m_ipaddress);
+    /// <summary>
+    /// IP address of all players that connected before, used by the room system.
+    /// </summary>
+    public List<string> allPlayerIPAddress = new List<string>();
 
-        if (AllPlayerData.ContainsKey(newplayerdata.m_ipaddress))
+    /// <summary>
+    /// Returns whether or not player is connected by checking their ip address, used by the playerstat, player tab on scoreboard
+    /// </summary>
+    /// <param name="ipaddress"></param>
+    /// <returns></returns>
+    public bool IsPlayerConnected(string ipaddress)
+    {
+        //CHECK ALL CONNECTED PLAYER
+        foreach(Player player in AllPlayers)
         {
-            //Only if its the server, then refresh the scoreboard
-            if (RoomSystem.instance)
+            //IF THE CONNECTED PLAYER CONTAINS THE ADDRESS, RETURN TRUE
+            if(player.playerData.m_ipaddress == ipaddress)
             {
-                //AllPlayerData[newplayerdata.m_ipaddress] = new PlayerData(newplayerdata);
-                newplayerdata = AllPlayerData[newplayerdata.m_ipaddress];
-                RoomSystem.instance.RefreshScoreboard();
+                return true;
             }
         }
-        else
-        {
-            //if doesnt exist, set a new one
-            SetPlayerData(newplayerdata);
-        }
+        return false;
     }
+
+    //public void GetPlayerData(PlayerData newplayerdata)
+    //{
+    //    Debug.Log("does the player have persistence yet? " + newplayerdata.m_ipaddress);
+
+    //    if (AllPlayerData.ContainsKey(newplayerdata.m_ipaddress))
+    //    {
+    //        //Only if its the server, then refresh the scoreboard
+    //        if (RoomSystem.instance)
+    //        {
+    //            //AllPlayerData[newplayerdata.m_ipaddress] = new PlayerData(newplayerdata);
+    //            newplayerdata = AllPlayerData[newplayerdata.m_ipaddress];
+    //            RoomSystem.instance.RefreshScoreboard();
+    //        }
+    //    }
+    //    else
+    //    {
+    //        //if doesnt exist, set a new one
+    //        SetPlayerData(newplayerdata);
+    //    }
+    //}
 
     public void SetPlayerData(PlayerData newplayerdata)
     {
@@ -59,18 +86,11 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
     {
         instance = this;
     }
-
-    private void Update()
-    {
-        if(AllPlayerData.Count > 0)
-        {
-            //Debug.Log(AllPlayerData["192.168.1.134"].m_color + " : " + AllPlayerData["192.168.1.134"].m_name);
-        }
-    }
-
+    
     public void ResetHostData()
     {
         AllPlayerData = new Dictionary<string, PlayerData>();
+        allPlayerIPAddress = new List<string>();
         Debug.Log(AllPlayerData.Count);
     }
 

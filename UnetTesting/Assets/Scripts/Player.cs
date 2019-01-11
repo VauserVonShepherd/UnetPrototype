@@ -59,9 +59,7 @@ public class Player : NetworkBehaviour
             m_color = value;
         }
     }
-
-    public Dictionary<string, Level> allLevel = new Dictionary<string, Level>();
-
+    
     //When first spawn
     private void Start()
     {
@@ -96,6 +94,32 @@ public class Player : NetworkBehaviour
             {
                 CmdChangeName("NICE");
             }
+
+            //SHIFT CURRENT LEVEL -1
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+
+            }
+            //SHIFT CURRENT LEVEL -1
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+
+            }
+            //ADD TIME
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+
+            }
+            //ADD TRIES
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+
+            }
+            //ADD FIRST TRY SCORE
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+
+            }
         }
     }
 
@@ -111,7 +135,7 @@ public class Player : NetworkBehaviour
             //CmdChangeColor(new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)));
             playerColor = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
 
-            playerName = "DDD";
+            playerName = "DefaultName";
             
             //Create a new temp to copy the data
             PlayerData newplayerdata = new PlayerData(playerData);
@@ -119,13 +143,20 @@ public class Player : NetworkBehaviour
             //add temp to the history of connected player to save persistence
             GlobalNetworkManager.instance.AllPlayerData.Add(newplayerdata.m_ipaddress, newplayerdata);
 
+            //If the there is no duplicate of ip on the GlobalNetworkManager
+            if (!GlobalNetworkManager.instance.allPlayerIPAddress.Contains(playerIPAddress))
+            {
+                //Add the ip into it
+                GlobalNetworkManager.instance.allPlayerIPAddress.Add(playerIPAddress);
+            }
+
             Debug.Log(m_ipaddress + " JUST CONNECTED " + playerName);
         }
         else
         {
-            Debug.Log(m_ipaddress + " RECONNECTED " + playerName);
-
             //Connected before
+            Debug.Log(m_ipaddress + " RECONNECTED " + playerName);
+            
             //Otherwise load the player with their saved data
             playerData = new PlayerData(GlobalNetworkManager.instance.AllPlayerData[playerIPAddress]);
         }
@@ -160,7 +191,9 @@ public class PlayerData
     public string m_ipaddress;
     [SyncVar]
     public Color m_color;
-    
+
+    public Dictionary<string, Level> allLevel = new Dictionary<string, Level>();
+
     public PlayerData()
     {
         m_name = "Default_Name";
