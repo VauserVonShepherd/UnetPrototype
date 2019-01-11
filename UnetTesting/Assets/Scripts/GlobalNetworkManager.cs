@@ -14,7 +14,6 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
     public Dictionary<string, PlayerData> AllPlayerData = new Dictionary<string, PlayerData>();
     public void GetPlayerData(PlayerData newplayerdata)
     {
-        Debug.Log(newplayerdata.m_ipaddress);
         if (AllPlayerData.ContainsKey(newplayerdata.m_ipaddress))
         {
             //Only if its the server, then refresh the scoreboard
@@ -38,6 +37,7 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
 
         if (newplayerdata.isServer)
         {
+            Debug.Log(newplayerdata.isServer);
             RoomSystem.instance.RefreshScoreboard();
         }
     }
@@ -53,7 +53,6 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
             }
         }
     }
-
 
     public string clientExternalIP {
         get
@@ -73,6 +72,12 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
         {
             //Debug.Log(AllPlayerData["192.168.1.134"].m_color + " : " + AllPlayerData["192.168.1.134"].m_name);
         }
+    }
+
+    public void ResetHostData()
+    {
+        AllPlayerData = new Dictionary<string, PlayerData>();
+        Debug.Log(AllPlayerData.Count);
     }
 
     /// <summary>
@@ -147,5 +152,7 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
             MainMenuManager.instance.SetMenu(0);
             RoomSystem.instance.RefreshScoreboard();
         }
+
+        ResetHostData();
     }
 }

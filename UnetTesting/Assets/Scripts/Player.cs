@@ -119,7 +119,7 @@ public class Player : NetworkBehaviour
             
             //add temp to the history of connected player to save persistence
             GlobalNetworkManager.instance.AllPlayerData.Add(newplayerdata.m_ipaddress, newplayerdata);
-
+            
         }
         else
         {
@@ -133,6 +133,7 @@ public class Player : NetworkBehaviour
     [Command]
     void CmdChangeName(string newName)
     {
+        Debug.Log("CHANGE NAME");
         playerName = newName;
         GlobalNetworkManager.instance.SetPlayerData(playerData);
     }
@@ -140,9 +141,7 @@ public class Player : NetworkBehaviour
     [Command]
     void CmdSetupNetworkPresence(string ipaddress)
     {
-        Debug.Log("SETUP NETWORK PRESENCE");
         playerIPAddress = ipaddress;
-        //GlobalNetworkManager.instance.GetPlayerData(playerData);
 
         CmdInitialize();
     }
@@ -151,8 +150,6 @@ public class Player : NetworkBehaviour
     void CmdChangeColor(Color newColor)
     {
         playerColor = newColor;
-        Debug.Log(playerColor);
-        //GlobalNetworkManager.instance.SetPlayerData(playerData);
     }
 }
 
