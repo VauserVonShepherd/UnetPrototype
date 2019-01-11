@@ -37,11 +37,7 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
     {
         StartCoroutine(SetPlayerDataCoroutine(newplayerdata));
 
-        if (newplayerdata.isServer)
-        {
-            Debug.Log(newplayerdata.isServer);
-            RoomSystem.instance.RefreshScoreboard();
-        }
+        RoomSystem.instance.RefreshScoreboard();
     }
     private IEnumerator SetPlayerDataCoroutine(PlayerData newplayerdata)
     {
@@ -49,10 +45,6 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
         if (AllPlayerData.ContainsKey(newplayerdata.m_ipaddress))
         {
             AllPlayerData[newplayerdata.m_ipaddress] = newplayerdata;
-            if (RoomSystem.instance)
-            {
-                RoomSystem.instance.RefreshScoreboard();
-            }
         }
     }
 

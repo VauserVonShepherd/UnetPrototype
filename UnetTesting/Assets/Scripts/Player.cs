@@ -77,7 +77,7 @@ public class Player : NetworkBehaviour
         {
             CmdSetupNetworkPresence(IPManager.GetLocalIPAddress());
         }
-
+    
         //If you are server, then run
         if (isServer) {
             RoomSystem.instance.AddPlayer(this);
@@ -103,29 +103,34 @@ public class Player : NetworkBehaviour
     [Command]
     public void CmdInitialize()
     {
+        Debug.Log(playerIPAddress + " NAME DURING INITIALIZING " + playerName);
+
         //If the player has not connected before
         if (!GlobalNetworkManager.instance.AllPlayerData.ContainsKey(playerIPAddress))
         {
-            Debug.Log(m_ipaddress + " RECONNECTED " + playerName);
-            CmdChangeColor(new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)));
-            CmdChangeName(playerName);
-            //Change color because new
-            //playerColor = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
+            //CmdChangeColor(new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)));
+            playerColor = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
 
+            playerName = "DDD";
+            
             //Create a new temp to copy the data
             PlayerData newplayerdata = new PlayerData(playerData);
             
             //add temp to the history of connected player to save persistence
             GlobalNetworkManager.instance.AllPlayerData.Add(newplayerdata.m_ipaddress, newplayerdata);
-            
+
+            Debug.Log(m_ipaddress + " JUST CONNECTED " + playerName);
         }
         else
         {
-            Debug.Log(m_ipaddress + " Just Joined");
+            Debug.Log(m_ipaddress + " RECONNECTED " + playerName);
+
             //Connected before
             //Otherwise load the player with their saved data
             playerData = new PlayerData(GlobalNetworkManager.instance.AllPlayerData[playerIPAddress]);
         }
+
+        Debug.Log(playerIPAddress + " NAME AFTER INITIALIZING " + playerName);
     }
 
     [Command]
@@ -141,14 +146,9 @@ public class Player : NetworkBehaviour
     {
         playerIPAddress = ipaddress;
 
-        CmdInitialize();
-        GlobalNetworkManager.instance.GetPlayerData(playerData);
-    }
+        Debug.Log(playerIPAddress + " NAME BEFORE INITIALIZING " + playerName);
 
-    [Command]
-    void CmdChangeColor(Color newColor)
-    {
-        playerColor = newColor;
+        CmdInitialize();
     }
 }
 
@@ -160,17 +160,12 @@ public class PlayerData
     public string m_ipaddress;
     [SyncVar]
     public Color m_color;
-
-    [SyncVar]
-    public bool isServer = false;
-
+    
     public PlayerData()
     {
-        m_name = "";
+        m_name = "Default_Name";
         m_ipaddress = IPManager.GetLocalIPAddress();
         m_color = new Color(0, 0, 0);
-
-        isServer = false;
     }
 
     public PlayerData(PlayerData playerdata)
@@ -178,7 +173,6 @@ public class PlayerData
         m_name = playerdata.m_name;
         m_ipaddress = playerdata.m_ipaddress;
         m_color = playerdata.m_color;
-
-        isServer = playerdata.isServer;
+        
     }
 }
