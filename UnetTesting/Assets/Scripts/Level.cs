@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class Level {
+    [SyncVar]
     public int stageVal;
     public string StageName
     {
@@ -13,9 +15,13 @@ public class Level {
         }
     }
 
+    [SyncVar]
     public string status;
+    [SyncVar]
     public float time;
+    [SyncVar]
     public int tries;
+    [SyncVar]
     public int firstTryScore;
 
     /// <summary>
@@ -25,7 +31,7 @@ public class Level {
     public Level(int levelVal)
     {
         stageVal = levelVal;
-        status = "-";
+        status = "Incomplete";
         time = 0;
         tries = 0;
         firstTryScore = 0;

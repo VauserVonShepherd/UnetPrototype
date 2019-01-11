@@ -431,7 +431,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 12
+    m_FontSize: 7
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -442,7 +442,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: Ongoing
 --- !u!114 &114085932519155044
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -638,7 +638,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 12
+    m_FontSize: 7
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -649,7 +649,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: Ongoing
 --- !u!114 &114594300151787138
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -758,7 +758,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 12
+    m_FontSize: 7
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -769,7 +769,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: Ongoing
 --- !u!114 &114906626439761306
 MonoBehaviour:
   m_ObjectHideFlags: 1

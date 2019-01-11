@@ -66,9 +66,6 @@ public class Player : NetworkBehaviour
         gameState.Initiate(this);
 
         DontDestroyOnLoad(gameObject);
-
-        //Setup the player and check whether or not it's new or been in the room before
-        //CmdInitialize();
         
         //If object is local, tell the server to give it its value
         if (isLocalPlayer)
@@ -98,12 +95,12 @@ public class Player : NetworkBehaviour
             //SHIFT CURRENT LEVEL -1
             if (Input.GetKeyDown(KeyCode.Q))
             {
-
+                CmdUpdateLevel(-1);
             }
             //SHIFT CURRENT LEVEL -1
             if (Input.GetKeyDown(KeyCode.E))
             {
-
+                CmdUpdateLevel(1);
             }
             //ADD TIME
             if (Input.GetKeyDown(KeyCode.I))
@@ -134,7 +131,7 @@ public class Player : NetworkBehaviour
         {
             //CmdChangeColor(new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f)));
             playerColor = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
-
+            CmdUpdateLevel(0);
             playerName = "DefaultName";
             
             //Create a new temp to copy the data
@@ -181,6 +178,13 @@ public class Player : NetworkBehaviour
 
         CmdInitialize();
     }
+
+    [Command]
+    void CmdUpdateLevel(int levelchange)
+    {
+        playerData.CurrentLevel = Mathf.Clamp(playerData.CurrentLevel + levelchange,1,3);
+        GlobalNetworkManager.instance.SetPlayerData(playerData);
+    }
 }
 
 public class PlayerData
@@ -195,8 +199,72 @@ public class PlayerData
     public Dictionary<string, Level> allLevel = new Dictionary<string, Level>();
 
     [SyncVar]
-    public int CurrentLevel = 0;
+    public int currentlevel = 1;
 
+    #region Properties
+    public int CurrentLevel
+    {
+        set
+        {
+            if(CurrentLevelTries > 0)
+            {
+                CurrentLevelStatus = "Completed";
+                return;
+            }
+            CurrentLevelStatus = "Incomplete";
+            currentlevel = value;
+            CurrentLevelStatus = "Ongoing";
+        }
+        get
+        {
+            return currentlevel;
+        }
+    }
+    public string CurrentLevelStatus
+    {
+        set
+        {
+            allLevel["Stage" + CurrentLevel].status = value;
+        }
+        get
+        {
+            return allLevel["Stage" + CurrentLevel].status;
+        }
+    }
+    public float CurrentLevelTime
+    {
+        set
+        {
+            allLevel["Stage" + CurrentLevel].time = value;
+        }
+        get
+        {
+            return allLevel["Stage" + CurrentLevel].time;
+        }
+    }
+    public int CurrentLevelTries
+    {
+        set
+        {
+            allLevel["Stage" + CurrentLevel].tries = value;
+        }
+        get
+        {
+            return allLevel["Stage" + CurrentLevel].tries;
+        }
+    }
+    public int CurrentLevelFirstTryScore
+    {
+        set
+        {
+            allLevel["Stage" + CurrentLevel].firstTryScore = value;
+        }
+        get
+        {
+            return allLevel["Stage" + CurrentLevel].firstTryScore;
+        }
+    }
+    #endregion
     public PlayerData()
     {
         m_name = "Default_Name";
@@ -209,6 +277,8 @@ public class PlayerData
         m_name = playerdata.m_name;
         m_ipaddress = playerdata.m_ipaddress;
         m_color = playerdata.m_color;
-        
+        currentlevel = playerdata.currentlevel;
+
+        allLevel = playerdata.allLevel;
     }
 }

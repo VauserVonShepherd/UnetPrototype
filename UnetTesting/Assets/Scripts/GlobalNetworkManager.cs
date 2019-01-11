@@ -41,17 +41,17 @@ public class GlobalNetworkManager : UnityEngine.Networking.NetworkManager {
     
     public void SetPlayerData(PlayerData newplayerdata)
     {
-        StartCoroutine(SetPlayerDataCoroutine(newplayerdata));
-
-        RoomSystem.instance.RefreshScoreboard();
+        StartCoroutine(SetPlayerDataCoroutine(newplayerdata));        
     }
     private IEnumerator SetPlayerDataCoroutine(PlayerData newplayerdata)
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
         if (AllPlayerData.ContainsKey(newplayerdata.m_ipaddress))
         {
             AllPlayerData[newplayerdata.m_ipaddress] = newplayerdata;
         }
+        Debug.Log(AllPlayerData.ContainsKey(newplayerdata.m_ipaddress));
+        RoomSystem.instance.RefreshScoreboard();
     }
 
     public string clientExternalIP {
